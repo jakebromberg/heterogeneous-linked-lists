@@ -7,14 +7,14 @@ struct TerminatingNode<ValueType> : NodeType {
     let value : ValueType
 }
 
-struct Node<ValueType, NextNodeType: NodeType> : NodeType {
+struct ListNode<ValueType, NextNodeType: NodeType> : NodeType {
     let value : ValueType
     let next : NextNodeType
 }
 
 let a = TerminatingNode(value: 123)
-var b = Node(value: 456, next: a)
-var c = Node(value: "asdf", next: b)
+var b = ListNode(value: 456, next: a)
+var c = ListNode(value: "asdf", next: b)
 
 assert(c.value == "asdf")
 assert(c.next.value == 456)
@@ -22,8 +22,8 @@ assert(c.next.next.value == 123)
 assert(type(of:c.next.value) != type(of:c.value))
 
 extension NodeType {
-    func prepend<U>(value: U) -> Node<U, Self> {
-        return Node(value: value, next: self)
+    func prepend<U>(value: U) -> ListNode<U, Self> {
+        return ListNode(value: value, next: self)
     }
 }
 
@@ -33,13 +33,13 @@ precedencegroup ListInfixPrecedence {
 
 infix operator >>> : ListInfixPrecedence
 
-func >>><T, U: NodeType>(lhs: T, rhs: U) -> Node<T, U> {
-    return Node(value: lhs, next: rhs)
+func >>><T, U: NodeType>(lhs: T, rhs: U) -> ListNode<T, U> {
+    return ListNode(value: lhs, next: rhs)
 }
 
 prefix operator >>>
 
-func >>><T, U>(lhs: T, rhs: U) -> Node<T, TerminatingNode<U>> {
+func >>><T, U>(lhs: T, rhs: U) -> ListNode<T, TerminatingNode<U>> {
     return TerminatingNode(value: rhs).prepend(value: lhs)
 }
 
